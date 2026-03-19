@@ -2,6 +2,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class MishClawTerminalAgent {
 
     private final ConsoleUi ui;
@@ -15,7 +19,7 @@ public class MishClawTerminalAgent {
 
         this.ui = new ConsoleUi();
         this.executor = new TerminalExecutor();
-        this.client = new OllamaClient("http://localhost:11434/api/chat", "qwen3.5:cloud", mapper);
+        this.client = new OllamaClient("http://localhost:11434/api/chat", "glm-5:cloud", mapper);
         this.context = new ChatContext(mapper);
         this.tools = new ToolDefinitionFactory(mapper).createRunTerminalTool();
 
@@ -28,15 +32,16 @@ public class MishClawTerminalAgent {
     }
 
     private void initSystemPrompt() {
-        context.addSystemMessage("Du bist ein hilfreicher KI-Systemadministrator. " +
-                "Du hast Zugriff auf ein Terminal. Nutze das Tool 'run_terminal', um Aufgaben zu lösen. " +
-                "Warte auf das Ergebnis, bevor du die finale Antwort gibst. Lösche keine Daten oder beende keine Prozesse. Behandle die Daten mit vorsicht. Frag lieber nach, wenn du eine Kritisches Command ausführen möchtest.");
+        try {
+            String prompt = Files.readString(Path.of("src/main/resources/systemprompt.md"));
+            context.addSystemMessage(prompt);
+        } catch (IOException e) {
+            ui.printError("Systemprompt konnte nicht geladen werden: " + e.getMessage());
+            System.exit(1);
+        }
     }
 
     public void start() {
-        ui.printInfo("=== MishClaw Terminal Agent gestartet ===");
-        ui.printInfo("Tippe 'exit' um zu beenden. Für mehrzeilige Eingaben tippe '\\' am Ende der Zeile.\n");
-
         while (true) {
             var userInput = ui.readUserInput();
 
@@ -57,11 +62,11 @@ public class MishClawTerminalAgent {
 
         while (!taskCompleted) {
             try {
-                ui.printAgentPrefix();
-
                 // Client aufrufen und Callback für den Stream übergeben
                 var result = client.sendChatRequest(context, tools, ui::printAgentChunk);
-                ui.printNewLine();
+                if (!result.getContent().isEmpty()) {
+                    ui.printNewLine();
+                }
 
                 // Antwort in den Kontext aufnehmen
                 context.addAssistantMessage(result.getContent(), result.getToolCalls());
@@ -86,10 +91,9 @@ public class MishClawTerminalAgent {
 
             if ("run_terminal".equals(functionName)) {
                 var command = function.get("arguments").get("command").asText();
-                ui.printSystem("   [🛠️ Tool Call erkannt] Führe aus: " + command);
+                ui.printSystem("🛠️ " + command);
 
                 var terminalResult = executor.execute(command);
-                ui.printSystem("   [✅ Tool Ergebnis gesammelt, sende zurück an LLM...]\n");
 
                 context.addToolResultMessage(functionName, terminalResult);
             }

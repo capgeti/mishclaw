@@ -8,6 +8,7 @@ import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Kapselt alle JLine-Abhängigkeiten und Methoden für die Ein- und Ausgabe.
@@ -25,7 +26,9 @@ public class ConsoleUi {
 
     private void initTerminal() {
         try {
-            this.terminal = TerminalBuilder.builder().system(true).build();
+            this.terminal = TerminalBuilder.builder()
+                    .encoding(StandardCharsets.UTF_8 )
+                    .system(true).build();
         } catch (IOException e) {
             throw new RuntimeException("Konnte Terminal nicht initialisieren", e);
         }
@@ -45,7 +48,7 @@ public class ConsoleUi {
     private void initUserPrompt() {
         this.userPrompt = new AttributedStringBuilder()
                 .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN).bold())
-                .append("\n ❯ ")
+                .append("🔹")
                 .toAnsi(terminal);
     }
 
@@ -57,25 +60,12 @@ public class ConsoleUi {
         }
     }
 
-    public void printInfo(String text) {
-        printColored(text, AttributedStyle.MAGENTA);
-    }
-
     public void printSystem(String text) {
-        printColored(text, AttributedStyle.YELLOW);
+        printColored(text, AttributedStyle.MAGENTA);
     }
 
     public void printError(String text) {
         printColored("\n[Fehler]: " + text, AttributedStyle.RED);
-    }
-
-    public void printAgentPrefix() {
-        String prefix = new AttributedStringBuilder()
-                .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA).bold())
-                .append("Agent: ")
-                .toAnsi(terminal);
-        terminal.writer().print(prefix);
-        terminal.writer().flush();
     }
 
     public void printAgentChunk(String chunk) {
