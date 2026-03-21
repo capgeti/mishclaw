@@ -1,10 +1,10 @@
-# MishClaw Terminal Agent
+# OpenBrain Terminal Agent
 
 Ein KI-gesteuerter Terminal-Agent, der lokale LLMs (über Ollama) nutzt, um Terminal-Befehle auszuführen.
 
 ## Überblick
 
-MishClaw ist ein Java-basierter Chat-Agent, der als hilfreicher KI-Systemadministrator agiert. Er kann Terminal-Befehle ausführen, um
+OpenBrain ist ein Java-basierter Chat-Agent, der als hilfreicher KI-Systemadministrator agiert. Er kann Terminal-Befehle ausführen, um
 Aufgaben zu lösen, wobei Sicherheitsrichtlinien eingehalten werden.
 
 ## Features
@@ -31,8 +31,8 @@ Aufgaben zu lösen, wobei Sicherheitsrichtlinien eingehalten werden.
 ### 1. Repository klonen
 
 ```bash
-git clone git@github.com:capgeti/mishclaw.git
-cd mishclaw
+git clone git@github.com:capgeti/openbrain.git
+cd openbrain
 ```
 
 ### 2. Ollama sicherstellen
@@ -54,8 +54,8 @@ mvn clean package -Pnative
 ### Starten des Agents
 
 ```bash
-java -jar target/mishclaw-0.1.0-SNAPSHOT.jar
-./mishclaw
+java -jar target/openbrain-0.1.0-SNAPSHOT.jar
+./openbrain
 ```
 
 ### Interaktion
@@ -70,8 +70,8 @@ java -jar target/mishclaw-0.1.0-SNAPSHOT.jar
 
 | Klasse                | Beschreibung                        |
 |-----------------------|-------------------------------------|
-| MishClawTerminalAgent | Hauptsteuerung und Entry Point      |
-| ConsoleUi             | Benutzeroberfläche für Input/Output |
+| OpenBrainApplication | Hauptsteuerung und Entry Point      |
+| ConsoleUiLanterna             | Benutzeroberfläche für Input/Output |
 | TerminalExecutor      | Führt Terminal-Befehle aus          |
 | OllamaClient          | Kommunikation mit Ollama API        |
 | ChatContext           | Verwaltet Gesprächsverlauf          |

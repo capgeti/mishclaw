@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class MishClawTerminalAgent {
+public class OpenBrainApplication {
 
     private final ConsoleUi ui;
     private final TerminalExecutor executor;
@@ -14,12 +14,12 @@ public class MishClawTerminalAgent {
     private final ChatContext context;
     private final ArrayNode tools;
 
-    public MishClawTerminalAgent() {
+    public OpenBrainApplication() {
         var mapper = new ObjectMapper();
 
         this.ui = new ConsoleUi();
         this.executor = new TerminalExecutor();
-        this.client = new OllamaClient("http://localhost:11434/api/chat", "glm-5:cloud", mapper);
+        this.client = new OllamaClient("http://localhost:11434/api/chat", "qwen3.5:4b", mapper);
         this.context = new ChatContext(mapper);
         this.tools = new ToolDefinitionFactory(mapper).createRunTerminalTool();
 
@@ -28,7 +28,7 @@ public class MishClawTerminalAgent {
 
     // --- Main Entry Point ---
     public static void main(String[] args) {
-        new MishClawTerminalAgent().start();
+        new OpenBrainApplication().start();
     }
 
     private void initSystemPrompt() {

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.michaelschwarz</groupId>
-    <artifactId>mishclaw</artifactId>
+    <artifactId>openbrain</artifactId>
     <version>0.1.0-SNAPSHOT</version>
 
     <properties>
@@ -14,21 +14,18 @@
     </properties>
 
     <dependencies>
-        <!-- Professionelles JSON Handling -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.21.1</version>
         </dependency>
 
-        <!-- Robustes CLI Handling -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>
             <version>1.6.0</version>
         </dependency>
 
-        <!-- Professionelle CLI, Farben und History -->
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
@@ -38,6 +35,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+
+                <configuration>
+                    <mainClass>OpenBrainApplication</mainClass>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -56,7 +63,7 @@
 
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>MishClawTerminalAgent</mainClass>
+                                    <mainClass>OpenBrainApplication</mainClass>
                                 </transformer>
                             </transformers>
 
@@ -103,8 +110,8 @@
                         </executions>
 
                         <configuration>
-                            <mainClass>MishClawTerminalAgent</mainClass>
-                            <imageName>mishclaw</imageName>
+                            <mainClass>OpenBrainApplication</mainClass>
+                            <imageName>openbrain</imageName>
                             <fallback>false</fallback>
 
                             <buildArgs>
